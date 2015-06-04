@@ -4,7 +4,7 @@ import shutil
 import tempfile
 import unittest
 
-from seqbc.models import (
+from dnabc.models import (
     Sample, Run,
     )
 

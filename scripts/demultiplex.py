@@ -1,3 +1,3 @@
 #!/usr/bin/env python
-from seqbc.demultiplex import demultiplex
+from dnabc.demultiplex import demultiplex
 demultiplex()

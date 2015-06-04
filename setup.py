@@ -2,11 +2,11 @@
 
 from distutils.core import setup
 
-setup(name='SeqBC',
+setup(name='DNAbc',
       version='0.0.1',
       description='Demultiplex pooled DNA sequencing data',
       author='Kyle Bittinger',
       author_email='kylebittinger@gmail.com',
       url='https://github.com/PennChopMicrobiomeProgram',
-      packages=['seqbc'],
+      packages=['dnabc'],
      )

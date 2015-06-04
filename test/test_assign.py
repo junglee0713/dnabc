@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import unittest
 
-from seqbc.assign import (
+from dnabc.assign import (
     PrefixAssigner, BarcodeAssigner,
     )
 

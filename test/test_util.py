@@ -2,7 +2,7 @@ import collections
 from cStringIO import StringIO
 import unittest
 
-from seqbc.util import (
+from dnabc.util import (
     key_by_attr, dict_from_eav, local_filepath,
     parse_fasta, parse_fastq, deambiguate, reverse_complement,
     )

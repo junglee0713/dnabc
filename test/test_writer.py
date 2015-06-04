@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import unittest
 
-from seqbc.writer import (
+from dnabc.writer import (
     FastaWriter, PooledFastaWriter,
     FastqWriter, PooledFastqWriter,
     PairedFastqWriter,

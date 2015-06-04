@@ -6,7 +6,7 @@ import shutil
 import tempfile
 import unittest
 
-from seqbc.run_file import (
+from dnabc.run_file import (
     SequenceFile, NullSequenceFile, FastaSequenceFile,
     SplitBySampleFastqSequenceFile,
     IndexFastqSequenceFile,

@@ -4,7 +4,7 @@ import shutil
 import tempfile
 import unittest
 
-from seqbc.demultiplex import demultiplex
+from dnabc.demultiplex import demultiplex
 
 
 class FastqDemultiplexTests(unittest.TestCase):
