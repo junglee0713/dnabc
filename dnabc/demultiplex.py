@@ -47,10 +47,14 @@ def demultiplex(argv=None):
 
     read_counts = seq_file.demultiplex(samples, writer)
 
-    demultiplex_log_fp = os.path.join(args.output_dir, "demultiplex_summary.txt")
-    with open(demultiplex_log_fp, "w") as f:
-        write_demultiplex_summary(f, read_counts)
+    summary_fp = os.path.join(args.output_dir, "demultiplex_summary.txt")
+    save_summary(summary_fp, read_counts)
 
-def write_demultiplex_summary(f, read_counts):
-    for sample_id, cts in read_counts.items():
-        f.write("%s\t%s\n" % (sample_id, cts))
+
+def save_summary(fp, data):
+    result = {
+        "program": "dnabc",
+        "version": "0.0.1",
+        "data": data,
+        }
+    json.dump(result, fp)
