@@ -1,4 +1,5 @@
 import gzip
+import json
 import os
 import shutil
 import tempfile
@@ -51,8 +52,10 @@ class FastqDemultiplexTests(unittest.TestCase):
             "-s", self.forward_fp, "-b", self.barcode_fp,
             "-o", self.output_dir, "-f", "fastq"])
 
-        with open(os.path.join(self.output_dir, "demultiplex_summary.txt")) as f:
-            self.assertEqual(f.read(), "SampleA\t1\nSampleB\t1\n")
+        summary_fp = os.path.join(self.output_dir, "demultiplex_summary.json")
+        with open(summary_fp) as f:
+            res = json.load(f)
+            self.assertEqual(res["data"], {"SampleA": 1, "SampleB": 1})
 
 
 if __name__ == "__main__":

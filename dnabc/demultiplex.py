@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 
 from .writer import (
@@ -8,6 +9,7 @@ from .writer import (
     )
 from .models import Sample
 from .run_file import SequenceFile
+from .version import __version__
 
 writers = {
     "fastq": PairedFastqWriter,
@@ -47,14 +49,15 @@ def demultiplex(argv=None):
 
     read_counts = seq_file.demultiplex(samples, writer)
 
-    summary_fp = os.path.join(args.output_dir, "demultiplex_summary.txt")
+    summary_fp = os.path.join(args.output_dir, "demultiplex_summary.json")
     save_summary(summary_fp, read_counts)
 
 
 def save_summary(fp, data):
     result = {
         "program": "dnabc",
-        "version": "0.0.1",
+        "version": __version__,
         "data": data,
         }
-    json.dump(result, fp)
+    with open(fp, "w") as f:
+        json.dump(result, f)

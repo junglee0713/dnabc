@@ -2,11 +2,15 @@
 
 from distutils.core import setup
 
-setup(name='DNAbc',
-      version='0.0.1',
-      description='Demultiplex pooled DNA sequencing data',
-      author='Kyle Bittinger',
-      author_email='kylebittinger@gmail.com',
-      url='https://github.com/PennChopMicrobiomeProgram',
-      packages=['dnabc'],
-     )
+# Get version number from package
+exec(open('dnabc/version.py').read())
+
+setup(
+    name='DNAbc',
+    version=__version__,
+    description='Demultiplex pooled DNA sequencing data',
+    author='Kyle Bittinger',
+    author_email='kylebittinger@gmail.com',
+    url='https://github.com/PennChopMicrobiomeProgram',
+    packages=['dnabc'],
+    )
