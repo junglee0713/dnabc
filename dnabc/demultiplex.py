@@ -9,6 +9,7 @@ from .writer import (
     )
 from .models import Sample
 from .run_file import SequenceFile
+from .assign import BarcodeAssigner
 from .version import __version__
 
 writers = {
@@ -39,6 +40,7 @@ def demultiplex(argv=None):
 
     seq_file = SequenceFile(args.sequence_file.name)
     samples = list(Sample.load(args.barcode_file))
+    assigner = BarcodeAssigner(samples)
     
     if os.path.exists(args.output_dir):
         p.error("Output directory already exists")
@@ -47,7 +49,7 @@ def demultiplex(argv=None):
     writer_cls = writers[args.output_format]
     writer = writer_cls(samples, args.output_dir)
 
-    read_counts = seq_file.demultiplex(samples, writer)
+    read_counts = seq_file.demultiplex(assigner, writer)
 
     summary_fp = os.path.join(args.output_dir, "demultiplex_summary.json")
     save_summary(summary_fp, read_counts)

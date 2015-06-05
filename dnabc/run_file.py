@@ -10,9 +10,6 @@ from .util import (
     parse_fasta, parse_fastq,
     FastaRead, FastqRead,
     )
-from .assign import (
-    PrefixAssigner, BarcodeAssigner,
-    )
 
 
 def SequenceFile(filepath):
@@ -84,7 +81,7 @@ class NullSequenceFile(object):
 class _ExistingSequenceFile(NullSequenceFile):
     """Private class with common template methods for run files.
     """
-    def demultiplex(self, samples, writer, assigner_class=PrefixAssigner):
+    def demultiplex(self, assigner, writer):
         raise NotImplementedError
     
     @property
@@ -142,8 +139,7 @@ class FastaSequenceFile(_ExistingSequenceFile):
     """FASTA data file from 454 sequencing."""
     filetype = "FASTA"
 
-    def demultiplex(self, samples, writer, assigner_class=PrefixAssigner):
-        assigner = assigner_class(samples)
+    def demultiplex(self, assigner, writer):
         with open(self.filepath) as f:
             for read in parse_fasta(f):
                 read = FastaRead(read)
@@ -208,9 +204,7 @@ class IndexFastqSequenceFile(_ExistingSequenceFile):
         return self.filepath.replace(
             "Undetermined_S0_L001_R1", "Undetermined_S0_L001_R2", 1)
 
-    def demultiplex(self, samples, writer, assigner_class=BarcodeAssigner):
-        assigner = assigner_class(samples)
-
+    def demultiplex(self, assigner, writer):
         idx_file = gzip.open(self.index_filepath, "rb")
         fwd_file = gzip.open(self.forward_filepath, "rb")
         rev_file = gzip.open(self.reverse_filepath, "rb")

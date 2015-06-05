@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 from dnabc.models import (
-    Sample, Run,
+    Sample,
     )
 
 

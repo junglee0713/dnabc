@@ -52,26 +52,36 @@ class BarcodeAssigner(_Assigner):
                 raise ValueError(
                     "All samples must be barcoded to use BarcodeAssigner: "
                     "%s" % s.name)
+
             if self.revcomp:
                 bc = reverse_complement(s.barcode)
             else:
                 bc = s.barcode
-            self._barcodes[bc] = s
+
+            if bc in self._barcodes:
+                raise ValueError(
+                    "Barcode for sample %s matches barcode for sample %s" % (
+                        s, self._barcodes[bc]))
+            else:
+                self._barcodes[bc] = s
+
             for error_bc in self._error_barcodes(bc):
-                # If we collide with another barcode here, we have a
-                # BIG problem -- can't tell the difference between two
-                # samples at this number of mismatches.
                 if error_bc in self._barcodes:
                     raise ValueError(
                         "Barcode %s for sample %s matches barcode for "
                         "sample %s with %s mismatches" % (
-                            error_bc, self._barcodes[error_bc],
-                            s.name, self.mismatches))
-                self._barcodes[error_bc] = s
+                            error_bc, self._barcodes[error_bc], s,
+                            self.mismatches))
+                else:
+                    self._barcodes[error_bc] = s
 
     def _error_barcodes(self, barcode):
+        # If the number of mismatches is set to 0, there will be no
+        # error barcodes. Immediately stop the iteration.
+        if self.mismatches == 0:
+            raise StopIteration
         # Each item in idx_sets is a set of indices where mismatches
-        # should occur
+        # should occur.
         idx_sets = itertools.combinations(range(len(barcode)), self.mismatches)
         for idx_set in idx_sets:
             # Change to list because strings are immutable

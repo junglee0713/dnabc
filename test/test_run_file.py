@@ -11,6 +11,7 @@ from dnabc.run_file import (
     SplitBySampleFastqSequenceFile,
     IndexFastqSequenceFile,
     )
+from dnabc.assign import BarcodeAssigner
 
 
 SFF_FP = os.path.join(
@@ -27,7 +28,7 @@ class MockWriter(object):
         else:
             self.written[sample.name].append(x)
 
-            
+
 MockSample = collections.namedtuple("MockSample", "name barcode")
 
 
@@ -103,8 +104,9 @@ class IndexFastqSequenceFile(unittest.TestCase):
         x = SequenceFile(self.forward_fp)
         w = MockWriter()
         # Barcode has 1 mismatch with second index read
-        s1 = MockSample("SampleS1", "AGCGCCCT")
-        x.demultiplex([s1], w)
+        s1 = MockSample("SampleS1", "GGGGCGCT")
+        a = BarcodeAssigner([s1], mismatches=0, revcomp=False)
+        x.demultiplex(a, w)
         
         # One read was written to SampleS1
         self.assertEqual(len(w.written["SampleS1"]), 1)
