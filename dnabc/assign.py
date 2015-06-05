@@ -1,8 +1,6 @@
 import collections
 import itertools
 
-from pytrie import StringTrie
-
 from .util import (
     AMBIGUOUS_BASES_COMPLEMENT, deambiguate, reverse_complement,
     )
@@ -11,27 +9,6 @@ from .util import (
 class _Assigner(object):
      def has_reads(self, sample):
         return self.read_counts[sample.name] > 0
-
-
-class PrefixAssigner(_Assigner):
-    """Assigns reads based on longest prefix match (exact match required).
-    """
-    def __init__(self, samples):
-        self.samples = samples
-        self.read_counts = collections.defaultdict(int)
-        self._init_trie()
-
-    def _init_trie(self):
-        self._trie = StringTrie()
-        for sample in self.samples:
-            for prefix in sample.prefixes:
-                self._trie[prefix] = sample
-
-    def assign(self, read):
-        sample = self._trie.longest_prefix_value(read.seq, None)
-        if sample is not None:
-            self.read_counts[sample.name] += 1
-        return sample
 
     
 class BarcodeAssigner(_Assigner):
@@ -42,7 +19,7 @@ class BarcodeAssigner(_Assigner):
                 "Only 0, 1, or 2 mismatches allowed (got %s)" % mismatches)
         self.mismatches = mismatches
         self.revcomp = revcomp
-        self.read_counts = collections.defaultdict(int)
+        self.read_counts = dict((s.name, 0) for s in self.samples)
         self._init_hash()
 
     def _init_hash(self):

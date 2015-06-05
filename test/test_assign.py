@@ -5,29 +5,11 @@ import shutil
 import tempfile
 import unittest
 
-from dnabc.assign import (
-    PrefixAssigner, BarcodeAssigner,
-    )
+from dnabc.assign import BarcodeAssigner
 
 
-MockRead = namedtuple("Read", ["seq"])
-
-
-class PrefixAssignerTests(unittest.TestCase):
-    def test_assign(self):
-        MockSample = namedtuple("Sample", ["name", "prefixes"])
-        s = MockSample(123, ["AGGC"])
-        a = PrefixAssigner([s])
-
-        self.assertFalse(a.has_reads(s))
-
-        # Prefix does not match, not assigned to sample
-        self.assertEqual(a.assign(MockRead("ATTCCTT")), None)
-        
-        self.assertFalse(a.has_reads(s))
-
-        self.assertEqual(a.assign(MockRead("AGGCCTT")), s)
-        self.assertTrue(a.has_reads(s))
+MockRead = namedtuple("Read", "seq")
+MockSample = namedtuple("Sample", "name barcode")
 
 
 class BarcodeAssignerTests(unittest.TestCase):
@@ -42,16 +24,21 @@ class BarcodeAssignerTests(unittest.TestCase):
         self.assertEqual(set(obs), set(exp))
 
     def test_one_mismatch(self):
-        MockSample = namedtuple("Sample", ["name", "barcode"])
-        s = MockSample(123, "ACCTGAC")
+        s = MockSample("Abc", "ACCTGAC")
         a = BarcodeAssigner([s], mismatches=1, revcomp=True)
+        self.assertEqual(a.read_counts, {"Abc": 0})
 
         # 0 mismatches
         self.assertEqual(a.assign(MockRead("GTCAGGT")), s)
+        self.assertEqual(a.read_counts, {"Abc": 1})
+
         # 1 mismatch
         self.assertEqual(a.assign(MockRead("GTCAAGT")), s)
+        self.assertEqual(a.read_counts, {"Abc": 2})
+
         # 2 mismatches
         self.assertEqual(a.assign(MockRead("GTCAAAT")), None)
+        self.assertEqual(a.read_counts, {"Abc": 2})
 
                 
 if __name__ == "__main__":
