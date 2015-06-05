@@ -6,12 +6,7 @@ from .util import (
     )
 
 
-class _Assigner(object):
-     def has_reads(self, sample):
-        return self.read_counts[sample.name] > 0
-
-    
-class BarcodeAssigner(_Assigner):
+class BarcodeAssigner(object):
     def __init__(self, samples, mismatches=1, revcomp=True):
         self.samples = samples
         if mismatches not in [0, 1, 2]:
@@ -19,30 +14,25 @@ class BarcodeAssigner(_Assigner):
                 "Only 0, 1, or 2 mismatches allowed (got %s)" % mismatches)
         self.mismatches = mismatches
         self.revcomp = revcomp
+        # Sample names assumed to be unique after validating input data
         self.read_counts = dict((s.name, 0) for s in self.samples)
         self._init_hash()
 
     def _init_hash(self):
         self._barcodes = {}
         for s in self.samples:
-            if not s.barcode:
-                raise ValueError(
-                    "All samples must be barcoded to use BarcodeAssigner: "
-                    "%s" % s.name)
-
+            # Barcodes assumed to be present after validating input data
             if self.revcomp:
                 bc = reverse_complement(s.barcode)
             else:
                 bc = s.barcode
 
-            if bc in self._barcodes:
-                raise ValueError(
-                    "Barcode for sample %s matches barcode for sample %s" % (
-                        s, self._barcodes[bc]))
-            else:
-                self._barcodes[bc] = s
+            # Barcodes assumed to be unique after validating input data
+            self._barcodes[bc] = s
 
             for error_bc in self._error_barcodes(bc):
+                # Barcodes not guaranteed to be unique after
+                # accounting for errors
                 if error_bc in self._barcodes:
                     raise ValueError(
                         "Barcode %s for sample %s matches barcode for "
@@ -78,4 +68,3 @@ class BarcodeAssigner(_Assigner):
         if sample is not None:
             self.read_counts[sample.name] += 1
         return sample
-    

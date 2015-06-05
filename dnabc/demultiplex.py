@@ -2,11 +2,7 @@ import argparse
 import json
 import os
 
-from .writer import (
-    FastaWriter, PooledFastaWriter,
-    FastqWriter, PooledFastqWriter,
-    PairedFastqWriter,
-    )
+from .writer import FastaWriter, PairedFastqWriter
 from .models import Sample
 from .run_file import SequenceFile
 from .assign import BarcodeAssigner
@@ -15,8 +11,6 @@ from .version import __version__
 writers = {
     "fastq": PairedFastqWriter,
     "fasta": FastaWriter,
-    "pooled_fastq": PooledFastqWriter,
-    "pooled_fasta": PooledFastaWriter,
     }
 
 def demultiplex(argv=None):
@@ -47,7 +41,7 @@ def demultiplex(argv=None):
 
     os.mkdir(args.output_dir)
     writer_cls = writers[args.output_format]
-    writer = writer_cls(samples, args.output_dir)
+    writer = writer_cls(args.output_dir)
 
     read_counts = seq_file.demultiplex(assigner, writer)
 

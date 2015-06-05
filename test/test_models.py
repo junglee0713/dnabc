@@ -1,12 +1,6 @@
-import gzip
-import os.path
-import shutil
-import tempfile
 import unittest
 
-from dnabc.models import (
-    Sample,
-    )
+from dnabc.models import Sample
 
 
 class SampleTests(unittest.TestCase):
