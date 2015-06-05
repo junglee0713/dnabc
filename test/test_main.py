@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import unittest
 
-from dnabc.demultiplex import demultiplex
+from dnabc.main import main
 
 
 class FastqDemultiplexTests(unittest.TestCase):
@@ -48,7 +48,7 @@ class FastqDemultiplexTests(unittest.TestCase):
         shutil.rmtree(self.temp_dir)
 
     def test_regular(self):
-        demultiplex([
+        main([
             "-s", self.forward_fp, "-b", self.barcode_fp,
             "-o", self.output_dir, "-f", "fastq"])
 

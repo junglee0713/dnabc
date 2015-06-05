@@ -1,3 +1,3 @@
 #!/usr/bin/env python
-from dnabc.demultiplex import demultiplex
-demultiplex()
+from dnabc.main import main
+main()

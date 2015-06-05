@@ -13,7 +13,7 @@ writers = {
     "fasta": FastaWriter,
     }
 
-def demultiplex(argv=None):
+def main(argv=None):
     p = argparse.ArgumentParser()
     p.add_argument(
         "--sequence-file", "-s", required=True,
