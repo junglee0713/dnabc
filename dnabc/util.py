@@ -14,32 +14,6 @@ def duplicates(xs):
     return list(seen_twice)
 
 
-def key_by_attr(objs, attr):
-    # Cannot use set() here, because objects might not be hashable.
-    # Use list() instead, even though order is not important.
-    obj_dict = collections.defaultdict(list)
-    for obj in objs:
-        val = getattr(obj, attr, None)
-        obj_dict[val].append(obj)
-    return obj_dict
-
-
-def dict_from_eav(rows, entity_value):
-    out = {}
-    for entity, attr, val in rows:
-        if entity == entity_value:
-            out[attr] = val
-    return out
-
-
-def local_filepath(data_fp, local_mount, remote_mount):
-    if local_mount is None:
-        return data_fp
-    if remote_mount is not None:
-        data_fp = os.path.relpath(data_fp, remote_mount)
-    return os.path.join(local_mount, data_fp.lstrip("/"))
-
-
 def parse_fasta(f):
     f = iter(f)
     desc = f.next().strip()[1:]
