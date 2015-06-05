@@ -1,6 +1,6 @@
 import os.path
 
-from .util import parse_barcode_file
+from .util import parse_barcode_file, duplicates
 
 class Sample(object):
     """Class representing one demultiplexable unit."""
@@ -12,4 +12,15 @@ class Sample(object):
 
     @classmethod
     def load(cls, f):
-        return [cls(name, bc) for name, bc in parse_barcode_file(f)]
+        records = list(parse_barcode_file(f))
+        names, bcs = zip(*records)
+
+        dup_names = duplicates(names)
+        if dup_names:
+            raise ValueError("Duplicate sample names: %s" % dup_names)
+
+        dup_bcs = duplicates(bcs)
+        if dup_bcs:
+            raise ValueError("Duplicate barcodes: %s" % dup_bcs)
+
+        return [cls(name, bc) for name, bc in records]

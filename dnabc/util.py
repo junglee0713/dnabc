@@ -4,6 +4,16 @@ import itertools
 import os
 
 
+def duplicates(xs):
+    # From http://stackoverflow.com/questions/9835762/
+    seen = set()
+    seen_add = seen.add
+    # adds all elements it doesn't know yet to seen and all other to seen_twice
+    seen_twice = set(x for x in xs if x in seen or seen_add(x))
+    # turn the set into a list (as requested)
+    return list(seen_twice)
+
+
 def key_by_attr(objs, attr):
     # Cannot use set() here, because objects might not be hashable.
     # Use list() instead, even though order is not important.
@@ -76,7 +86,7 @@ def parse_barcode_file(f):
         sample_id = toks[0]
         barcode = toks[1]
         yield sample_id, barcode
-        
+
 
 class FastaRead(object):
     def __init__(self, read):
