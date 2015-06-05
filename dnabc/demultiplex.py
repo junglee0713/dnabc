@@ -51,7 +51,7 @@ def demultiplex(argv=None):
 
     read_counts = seq_file.demultiplex(assigner, writer)
 
-    summary_fp = os.path.join(args.output_dir, "demultiplex_summary.json")
+    summary_fp = os.path.join(args.output_dir, "dnabc_summary.json")
     save_summary(summary_fp, read_counts)
 
 

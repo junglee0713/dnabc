@@ -52,7 +52,7 @@ class FastqDemultiplexTests(unittest.TestCase):
             "-s", self.forward_fp, "-b", self.barcode_fp,
             "-o", self.output_dir, "-f", "fastq"])
 
-        summary_fp = os.path.join(self.output_dir, "demultiplex_summary.json")
+        summary_fp = os.path.join(self.output_dir, "dnabc_summary.json")
         with open(summary_fp) as f:
             res = json.load(f)
             self.assertEqual(res["data"], {"SampleA": 1, "SampleB": 1})
