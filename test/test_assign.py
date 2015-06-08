@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import unittest
 
-from dnabclib.assign import (
+from dnabclib.assigner import (
     BarcodeAssigner, deambiguate, reverse_complement,
     )
 

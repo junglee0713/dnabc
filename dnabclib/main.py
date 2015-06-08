@@ -5,7 +5,7 @@ import os
 from .writer import FastaWriter, PairedFastqWriter
 from .models import Sample
 from .run_file import IndexFastqSequenceFile
-from .assign import BarcodeAssigner
+from .assigner import BarcodeAssigner
 from .version import __version__
 
 writers = {
