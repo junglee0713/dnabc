@@ -5,7 +5,9 @@ import shutil
 import tempfile
 import unittest
 
-from dnabclib.assign import BarcodeAssigner
+from dnabclib.assign import (
+    BarcodeAssigner, deambiguate, reverse_complement,
+    )
 
 
 MockRead = namedtuple("Read", "seq")
@@ -39,6 +41,21 @@ class BarcodeAssignerTests(unittest.TestCase):
         # 2 mismatches
         self.assertEqual(a.assign(MockRead("GTCAAAT")), None)
         self.assertEqual(a.read_counts, {"Abc": 2})
+
+
+class FunctionTests(unittest.TestCase):
+    def test_deambiguate(self):
+        obs = set(deambiguate("AYGR"))
+        exp = set(["ACGA", "ACGG", "ATGA", "ATGG"])
+        self.assertEqual(obs, exp)
+
+        obs = set(deambiguate("AGN"))
+        exp = set(["AGA", "AGC", "AGG", "AGT"])
+        self.assertEqual(obs, exp)
+
+    def test_reverse_complement(self):
+        self.assertEqual(reverse_complement("AGATC"), "GATCT")
+        self.assertRaises(KeyError, reverse_complement, "ANCC")
 
                 
 if __name__ == "__main__":
