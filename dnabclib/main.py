@@ -16,18 +16,18 @@ writers = {
 def main(argv=None):
     p = argparse.ArgumentParser()
     p.add_argument(
-        "--sequence-file", "-s", required=True,
+        "--sequence-file", required=True,
         help="Input sequence data filepath",
         type=argparse.FileType("r"))
     p.add_argument(
-        "--barcode-file", "-b", required=True,
+        "--barcode-file", required=True,
         help="Barcode information filepath",
         type=argparse.FileType("r"))
     p.add_argument(
-        "--output-dir", "-o", required=True,
+        "--output-dir", required=True,
         help="Output sequence data directory")
     p.add_argument(
-        "--output-format", "-f", required=True,
+        "--output-format", required=True,
         help="Output format",
         choices=writers.keys())
     args = p.parse_args(argv)
