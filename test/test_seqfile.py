@@ -9,7 +9,7 @@ import unittest
 from dnabclib.seqfile import (
     IndexFastqSequenceFile, parse_fastq,
     )
-from dnabclib.assign import BarcodeAssigner
+from dnabclib.assigner import BarcodeAssigner
 
 
 class MockWriter(object):
