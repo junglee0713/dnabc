@@ -30,6 +30,10 @@ def main(argv=None):
     p.add_argument(
         "--output-dir", required=True,
         help="Output sequence data directory")
+    p.add_argument(
+        "--summary-file", required=True,
+        type=argparse.FileType("w"),
+        help="Summary filepath")
     p.add_argument("--config-file",
         type=argparse.FileType("r"),
         help="Configuration file (JSON format)")
@@ -50,17 +54,16 @@ def main(argv=None):
     os.mkdir(args.output_dir)
 
     writer = writer_cls(args.output_dir)
-    read_counts = seq_file.demultiplex(assigner, writer)
+    summary_data = seq_file.demultiplex(assigner, writer)
 
-    summary_fp = os.path.join(args.output_dir, "dnabc_summary.json")
-    save_summary(summary_fp, read_counts)
+    save_summary(args.summary_file, config, summary_data)
 
 
-def save_summary(fp, data):
+def save_summary(f, config, data):
     result = {
         "program": "dnabc",
         "version": __version__,
+        "config": config,
         "data": data,
         }
-    with open(fp, "w") as f:
-        json.dump(result, f)
+    json.dump(result, f)

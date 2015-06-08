@@ -43,6 +43,7 @@ class FastqDemultiplexTests(unittest.TestCase):
                 "SampleB\tACGTACGT\n")
 
         self.output_dir = os.path.join(self.temp_dir, "output")
+        self.summary_fp = os.path.join(self.temp_dir, "summary.json")
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -52,10 +53,9 @@ class FastqDemultiplexTests(unittest.TestCase):
             "--sequence-file", self.forward_fp,
             "--barcode-file", self.barcode_fp,
             "--output-dir", self.output_dir,
+            "--summary-file", self.summary_fp,
             ])
-
-        summary_fp = os.path.join(self.output_dir, "dnabc_summary.json")
-        with open(summary_fp) as f:
+        with open(self.summary_fp) as f:
             res = json.load(f)
             self.assertEqual(res["data"], {"SampleA": 1, "SampleB": 1})
 
