@@ -1,12 +1,14 @@
 import collections
+from cStringIO import StringIO
 import gzip
-import hashlib
 import os.path
 import shutil
 import tempfile
 import unittest
 
-from dnabclib.run_file import IndexFastqSequenceFile
+from dnabclib.run_file import (
+    IndexFastqSequenceFile, parse_fastq,
+    )
 from dnabclib.assign import BarcodeAssigner
 
 
@@ -73,6 +75,28 @@ class IndexFastqSequenceFileTests(unittest.TestCase):
         self.assertEqual(r2.desc, "b")
         self.assertEqual(r2.seq, "GTNNNNNNNNNNNNNNNNNNN")
         self.assertEqual(r2.qual, "#####################")
+
+
+class FunctionTests(unittest.TestCase):
+    def test_parse_fastq(self):
+        obs = parse_fastq(StringIO(fastq1))
+        self.assertEqual(next(obs), (
+            "YesYes", "AGGGCCTTGGTGGTTAG", ";234690GSDF092384"))
+        self.assertEqual(next(obs), (
+            "Seq2:with spaces", "GCTNNNNNNNNNNNNNNN", "##################"))
+        self.assertRaises(StopIteration, next, obs)
+
+
+fastq1 = """\
+@YesYes
+AGGGCCTTGGTGGTTAG
++
+;234690GSDF092384
+@Seq2:with spaces
+GCTNNNNNNNNNNNNNNN
++
+##################
+"""
 
 
 if __name__ == "__main__":

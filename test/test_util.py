@@ -3,7 +3,7 @@ from cStringIO import StringIO
 import unittest
 
 from dnabclib.util import (
-    parse_fasta, parse_fastq, deambiguate, reverse_complement,
+    parse_fasta, deambiguate, reverse_complement,
     )
 
 class UtilTests(unittest.TestCase):
@@ -12,14 +12,6 @@ class UtilTests(unittest.TestCase):
         self.assertEqual(next(obs), ("seq1 hello", "ACGTGGGTTAA"))
         self.assertEqual(next(obs), ("seq 2", "GTTCCGAAA"))
         self.assertEqual(next(obs), ("seq3", ""))
-        self.assertRaises(StopIteration, next, obs)
-
-    def test_parse_fastq(self):
-        obs = parse_fastq(StringIO(fastq1))
-        self.assertEqual(next(obs), (
-            "YesYes", "AGGGCCTTGGTGGTTAG", ";234690GSDF092384"))
-        self.assertEqual(next(obs), (
-            "Seq2:with spaces", "GCTNNNNNNNNNNNNNNN", "##################"))
         self.assertRaises(StopIteration, next, obs)
 
     def test_deambiguate(self):
@@ -47,16 +39,6 @@ GAAA
 >seq3
 """
 
-fastq1 = """\
-@YesYes
-AGGGCCTTGGTGGTTAG
-+
-;234690GSDF092384
-@Seq2:with spaces
-GCTNNNNNNNNNNNNNNN
-+
-##################
-"""
 
 if __name__ == '__main__':
     unittest.main()

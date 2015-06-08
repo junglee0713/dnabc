@@ -29,21 +29,6 @@ def parse_fasta(f):
     yield desc, seq.getvalue()
 
 
-def _grouper(iterable, n):
-    "Collect data into fixed-length chunks or blocks"
-    # grouper('ABCDEFG', 3) --> ABC DEF
-    args = [iter(iterable)] * n
-    return itertools.izip(*args)
-
-
-def parse_fastq(f):
-    for desc, seq, _, qual in _grouper(f, 4):
-        desc = desc.rstrip()[1:]
-        seq = seq.rstrip()
-        qual = qual.rstrip()
-        yield desc, seq, qual
-
-
 def parse_barcode_file(f):
     for n, line in enumerate(f):
         if line.startswith("#"):
@@ -65,11 +50,6 @@ def parse_barcode_file(f):
 class FastaRead(object):
     def __init__(self, read):
         self.desc, self.seq = read
-
-
-class FastqRead(object):
-    def __init__(self, read):
-        self.desc, self.seq, self.qual = read
 
 
 AMBIGUOUS_BASES = {

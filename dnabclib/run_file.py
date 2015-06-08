@@ -1,9 +1,6 @@
 import gzip
 import itertools
 
-from .util import (
-    parse_fastq, FastqRead,
-    )
 
 class IndexFastqSequenceFile(object):
     """Non-demultiplexed Illumina read data."""
@@ -28,4 +25,23 @@ class IndexFastqSequenceFile(object):
             fwd_file.close()
             rev_file.close()
         return assigner.read_counts
-    
+
+
+class FastqRead(object):
+    def __init__(self, read):
+        self.desc, self.seq, self.qual = read
+
+
+def _grouper(iterable, n):
+    "Collect data into fixed-length chunks or blocks"
+    # grouper('ABCDEFG', 3) --> ABC DEF
+    args = [iter(iterable)] * n
+    return itertools.izip(*args)
+
+
+def parse_fastq(f):
+    for desc, seq, _, qual in _grouper(f, 4):
+        desc = desc.rstrip()[1:]
+        seq = seq.rstrip()
+        qual = qual.rstrip()
+        yield desc, seq, qual
