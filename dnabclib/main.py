@@ -3,7 +3,7 @@ import json
 import os
 
 from .writer import FastaWriter, PairedFastqWriter
-from .models import Sample
+from .sample import Sample
 from .seqfile import IndexFastqSequenceFile
 from .assigner import BarcodeAssigner
 from .version import __version__

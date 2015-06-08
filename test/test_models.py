@@ -1,6 +1,6 @@
 import unittest
 
-from dnabclib.models import Sample
+from dnabclib.sample import Sample
 
 
 class SampleTests(unittest.TestCase):
