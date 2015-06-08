@@ -6,16 +6,8 @@ import shutil
 import tempfile
 import unittest
 
-from dnabclib.run_file import (
-    SequenceFile, NullSequenceFile, FastaSequenceFile,
-    SplitBySampleFastqSequenceFile,
-    IndexFastqSequenceFile,
-    )
+from dnabclib.run_file import IndexFastqSequenceFile
 from dnabclib.assign import BarcodeAssigner
-
-
-SFF_FP = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "data", "small.sff")
 
 
 class MockWriter(object):
@@ -32,33 +24,7 @@ class MockWriter(object):
 MockSample = collections.namedtuple("MockSample", "name barcode")
 
 
-class NullSequenceFileTests(unittest.TestCase):
-    def test_no_demultiplex_method(self):
-        """NullSequenceFile should not have a demultiplex method."""
-        self.assertFalse(hasattr(NullSequenceFile("b"), "demultiplex"))
-
-
-class FastaSequenceFileTests(unittest.TestCase):
-    def test_get_runinfo(self):
-        contents = ">a\nACGTACGT\n>b c d; e\nNNNNNN\n"
-        
-        f = tempfile.NamedTemporaryFile(suffix=".fasta")
-        f.write(contents)
-        f.seek(0)
-        
-        x = FastaSequenceFile(f.name)
-        x.get_runinfo()
-
-        self.assertEqual(x.num_reads, 2)
-        self.assertEqual(x.num_flows, None)
-        self.assertEqual(x.num_bases, 14)
-
-        fasta_md5 = hashlib.md5()
-        fasta_md5.update(contents)
-        self.assertEqual(x.checksum, fasta_md5.hexdigest())
-
-
-class IndexFastqSequenceFile(unittest.TestCase):
+class IndexFastqSequenceFileTests(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()
         self.index_fp = os.path.join(
@@ -88,26 +54,15 @@ class IndexFastqSequenceFile(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
-            
-    def test_get_runinfo(self):
-        x = SequenceFile(self.forward_fp)
-        x.get_runinfo()
-        self.assertEqual(x.num_reads, 3)
-        self.assertEqual(x.num_flows, None)
-        self.assertEqual(x.num_bases, 21 * 3 * 2)
-
-        ifastq_md5 = hashlib.md5()
-        ifastq_md5.update(open(self.forward_fp, "rb").read())
-        self.assertEqual(x.checksum, ifastq_md5.hexdigest())
 
     def test_demultiplex(self):
-        x = SequenceFile(self.forward_fp)
+        x = IndexFastqSequenceFile(self.forward_fp, self.reverse_fp, self.index_fp)
         w = MockWriter()
         # Barcode has 1 mismatch with second index read
         s1 = MockSample("SampleS1", "GGGGCGCT")
         a = BarcodeAssigner([s1], mismatches=0, revcomp=False)
         x.demultiplex(a, w)
-        
+
         # One read was written to SampleS1
         self.assertEqual(len(w.written["SampleS1"]), 1)
         # That read was the second of three above

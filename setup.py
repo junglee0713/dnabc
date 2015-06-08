@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 # Get version number from package
-exec(open('dnabc/version.py').read())
+exec(open('dnabclib/version.py').read())
 
 setup(
     name='DNAbc',
@@ -12,5 +12,5 @@ setup(
     author='Kyle Bittinger',
     author_email='kylebittinger@gmail.com',
     url='https://github.com/PennChopMicrobiomeProgram',
-    packages=['dnabc'],
+    packages=['dnabclib'],
     )
