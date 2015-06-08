@@ -13,6 +13,10 @@ writers = {
     "fasta": FastaWriter,
     }
 
+default_config = {
+    "output_format": "fastq"
+    }
+
 def main(argv=None):
     p = argparse.ArgumentParser()
     p.add_argument(
@@ -26,11 +30,16 @@ def main(argv=None):
     p.add_argument(
         "--output-dir", required=True,
         help="Output sequence data directory")
-    p.add_argument(
-        "--output-format", required=True,
-        help="Output format",
-        choices=writers.keys())
+    p.add_argument("--config-file",
+        type=argparse.FileType("r"),
+        help="Configuration file (JSON format)")
     args = p.parse_args(argv)
+
+    config = default_config
+    if args.config_file:
+        user_config = json.load(args.config_file)
+        config.update(user_config)
+    writer_cls = writers[config["output_format"]]
 
     seq_file = SequenceFile(args.sequence_file.name)
     samples = list(Sample.load(args.barcode_file))
@@ -38,11 +47,9 @@ def main(argv=None):
     
     if os.path.exists(args.output_dir):
         p.error("Output directory already exists")
-
     os.mkdir(args.output_dir)
-    writer_cls = writers[args.output_format]
-    writer = writer_cls(args.output_dir)
 
+    writer = writer_cls(args.output_dir)
     read_counts = seq_file.demultiplex(assigner, writer)
 
     summary_fp = os.path.join(args.output_dir, "dnabc_summary.json")

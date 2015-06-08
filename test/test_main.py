@@ -52,7 +52,7 @@ class FastqDemultiplexTests(unittest.TestCase):
             "--sequence-file", self.forward_fp,
             "--barcode-file", self.barcode_fp,
             "--output-dir", self.output_dir,
-            "--output-format", "fastq"])
+            ])
 
         summary_fp = os.path.join(self.output_dir, "dnabc_summary.json")
         with open(summary_fp) as f:
