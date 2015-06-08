@@ -6,7 +6,7 @@ import shutil
 import tempfile
 import unittest
 
-from dnabclib.run_file import (
+from dnabclib.seqfile import (
     IndexFastqSequenceFile, parse_fastq,
     )
 from dnabclib.assign import BarcodeAssigner
