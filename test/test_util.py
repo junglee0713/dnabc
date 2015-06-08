@@ -2,7 +2,7 @@ import collections
 from cStringIO import StringIO
 import unittest
 
-from dnabc.util import (
+from dnabclib.util import (
     parse_fasta, parse_fastq, deambiguate, reverse_complement,
     )
 

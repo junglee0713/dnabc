@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import unittest
 
-from dnabc.main import main
+from dnabclib.main import main
 
 
 class FastqDemultiplexTests(unittest.TestCase):

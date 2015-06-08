@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import unittest
 
-from dnabc.assign import BarcodeAssigner
+from dnabclib.assign import BarcodeAssigner
 
 
 MockRead = namedtuple("Read", "seq")

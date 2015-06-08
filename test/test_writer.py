@@ -5,7 +5,7 @@ import shutil
 import tempfile
 import unittest
 
-from dnabc.writer import FastaWriter, FastqWriter, PairedFastqWriter
+from dnabclib.writer import FastaWriter, FastqWriter, PairedFastqWriter
 
 
 class FastaWriterTests(unittest.TestCase):

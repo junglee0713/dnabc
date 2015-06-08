@@ -6,12 +6,12 @@ import shutil
 import tempfile
 import unittest
 
-from dnabc.run_file import (
+from dnabclib.run_file import (
     SequenceFile, NullSequenceFile, FastaSequenceFile,
     SplitBySampleFastqSequenceFile,
     IndexFastqSequenceFile,
     )
-from dnabc.assign import BarcodeAssigner
+from dnabclib.assign import BarcodeAssigner
 
 
 SFF_FP = os.path.join(
