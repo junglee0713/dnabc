@@ -14,21 +14,6 @@ def duplicates(xs):
     return list(seen_twice)
 
 
-def parse_fasta(f):
-    f = iter(f)
-    desc = f.next().strip()[1:]
-    seq = StringIO()
-    for line in f:
-        line = line.strip()
-        if line.startswith(">"):
-            yield desc, seq.getvalue()
-            desc = line[1:]
-            seq = StringIO()
-        else:
-            seq.write(line)
-    yield desc, seq.getvalue()
-
-
 def parse_barcode_file(f):
     for n, line in enumerate(f):
         if line.startswith("#"):
@@ -45,11 +30,6 @@ def parse_barcode_file(f):
         sample_id = toks[0]
         barcode = toks[1]
         yield sample_id, barcode
-
-
-class FastaRead(object):
-    def __init__(self, read):
-        self.desc, self.seq = read
 
 
 AMBIGUOUS_BASES = {
@@ -70,6 +50,7 @@ AMBIGUOUS_BASES = {
     "N": "TCAG",
     }
 
+
 # Ambiguous base codes for all bases EXCEPT the key
 AMBIGUOUS_BASES_COMPLEMENT = {
     "T": "V",
@@ -83,12 +64,14 @@ def deambiguate(seq):
     nt_choices = [AMBIGUOUS_BASES[x] for x in seq]
     return ["".join(c) for c in itertools.product(*nt_choices)]
 
+
 COMPLEMENT_BASES = {
     "T": "A",
     "C": "G",
     "A": "T",
     "G": "C",
     }
+
 
 def reverse_complement(seq):
     rc = [COMPLEMENT_BASES[x] for x in seq]

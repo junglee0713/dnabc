@@ -3,17 +3,10 @@ from cStringIO import StringIO
 import unittest
 
 from dnabclib.util import (
-    parse_fasta, deambiguate, reverse_complement,
+    deambiguate, reverse_complement,
     )
 
 class UtilTests(unittest.TestCase):
-    def test_parse_fasta(self):
-        obs = parse_fasta(StringIO(fasta1))
-        self.assertEqual(next(obs), ("seq1 hello", "ACGTGGGTTAA"))
-        self.assertEqual(next(obs), ("seq 2", "GTTCCGAAA"))
-        self.assertEqual(next(obs), ("seq3", ""))
-        self.assertRaises(StopIteration, next, obs)
-
     def test_deambiguate(self):
         obs = set(deambiguate("AYGR"))
         exp = set(["ACGA", "ACGG", "ATGA", "ATGG"])
@@ -26,18 +19,6 @@ class UtilTests(unittest.TestCase):
     def test_reverse_complement(self):
         self.assertEqual(reverse_complement("AGATC"), "GATCT")
         self.assertRaises(KeyError, reverse_complement, "ANCC")
-
-
-fasta1 = """\
->seq1 hello
-ACGTGG
-GTTAA
->seq 2
-GTTC
-C
-GAAA
->seq3
-"""
 
 
 if __name__ == '__main__':
