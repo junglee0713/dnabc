@@ -13,4 +13,5 @@ setup(
     author_email='kylebittinger@gmail.com',
     url='https://github.com/PennChopMicrobiomeProgram',
     packages=['dnabclib'],
+    scripts=['scripts/dnabc.py'],
     )
