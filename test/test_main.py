@@ -1,4 +1,3 @@
-import gzip
 import json
 import os
 import shutil
@@ -12,25 +11,25 @@ class FastqDemultiplexTests(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()
         self.index_fp = os.path.join(
-            self.temp_dir, "Undetermined_S0_L001_I1_001.fastq.gz")
+            self.temp_dir, "Undetermined_S0_L001_I1_001.fastq")
         self.index_contents = (
             "@a\nACGTACGT\n+\n9812734[\n"
             "@b\nGGGGCGCT\n+\n78154987\n"
             "@c\nCCTTCCTT\n+\nkjafd;;;\n")
-        with gzip.open(self.index_fp, "w") as f:
+        with open(self.index_fp, "w") as f:
             f.write(self.index_contents)
 
         self.forward_fp = os.path.join(
-            self.temp_dir, "Undetermined_S0_L001_R1_001.fastq.gz")
-        with gzip.open(self.forward_fp, "w") as f:
+            self.temp_dir, "Undetermined_S0_L001_R1_001.fastq")
+        with open(self.forward_fp, "w") as f:
             f.write(
                 "@a\nGACTGCAGACGACTACGACGT\n+\n8A7T4C2G3CkAjThCeArG;\n"
                 "@b\nCAGTCAGACGCGCATCAGATC\n+\n78154987bjhasf78612rb\n"
                 "@c\nTCAGTACGTACGATACGTACG\n+\nkjafd;;;hjfasd82AHG99\n")
 
         self.reverse_fp = os.path.join(
-            self.temp_dir, "Undetermined_S0_L001_R2_001.fastq.gz")
-        with gzip.open(self.reverse_fp, "w") as f:
+            self.temp_dir, "Undetermined_S0_L001_R2_001.fastq")
+        with open(self.reverse_fp, "w") as f:
             f.write(
                 "@a\nCATACGACGACTACGACTCAG\n+\nkjfhda987123GA;,.;,..\n"
                 "@b\nGTNNNNNNNNNNNNNNNNNNN\n+\n#####################\n"

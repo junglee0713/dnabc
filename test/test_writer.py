@@ -1,5 +1,4 @@
 from collections import namedtuple
-import gzip
 import os.path
 import shutil
 import tempfile
@@ -50,7 +49,7 @@ class FastqWriterTests(unittest.TestCase):
         w.close()
 
         fp = w._get_output_fp(s1)
-        obs_output = gzip.open(fp).read()
+        obs_output = open(fp).read()
         
         self.assertEqual(obs_output, "@Read0\nACCTTGG\n+\n#######\n")
 
@@ -80,10 +79,10 @@ class PairedFastqWriterTests(unittest.TestCase):
 
         fp1, fp2 = w._get_output_fp(s1)
 
-        obs1 = gzip.open(fp1).read()
+        obs1 = open(fp1).read()
         self.assertEqual(obs1, "@Read0\nACCTTGG\n+\n#######\n")
 
-        obs2 = gzip.open(fp2).read()
+        obs2 = open(fp2).read()
         self.assertEqual(obs2, "@Read1\nGCTAGCT\n+\n;342dfA\n")
 
         self.assertFalse(any(
