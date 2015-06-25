@@ -1,6 +1,4 @@
-import gzip
 import itertools
-
 
 class IndexFastqSequenceFile(object):
     """Non-demultiplexed Illumina read data."""
@@ -10,9 +8,9 @@ class IndexFastqSequenceFile(object):
         self.index_filepath = idx_fp
 
     def demultiplex(self, assigner, writer):
-        idx_file = gzip.open(self.index_filepath, "rb")
-        fwd_file = gzip.open(self.forward_filepath, "rb")
-        rev_file = gzip.open(self.reverse_filepath, "rb")
+        idx_file = open(self.index_filepath, "rb")
+        fwd_file = open(self.forward_filepath, "rb")
+        rev_file = open(self.reverse_filepath, "rb")
         idxs = (FastqRead(x) for x in parse_fastq(idx_file))
         fwds = (FastqRead(x) for x in parse_fastq(fwd_file))
         revs = (FastqRead(x) for x in parse_fastq(rev_file))

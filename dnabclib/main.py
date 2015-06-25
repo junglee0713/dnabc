@@ -22,13 +22,13 @@ def main(argv=None):
     # Input
     p.add_argument("--forward-reads", required=True,
         type=argparse.FileType("r"),
-        help="Forward reads file (Gzipped FASTQ format)")
+        help="Forward reads file (FASTQ format)")
     p.add_argument("--reverse-reads", required=True,
         type=argparse.FileType("r"),
-        help="Reverse reads file (Gzipped FASTQ format)")
+        help="Reverse reads file (FASTQ format)")
     p.add_argument("--index-reads", required=True,
         type=argparse.FileType("r"),
-        help="Index reads file (Gzipped FASTQ format)")
+        help="Index reads file (FASTQ format)")
     p.add_argument(
         "--barcode-file", required=True,
         help="Barcode information file",

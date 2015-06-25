@@ -1,4 +1,3 @@
-import gzip
 import os.path
 
  
@@ -55,11 +54,11 @@ class FastaWriter(_SequenceWriter):
 
 
 class FastqWriter(_SequenceWriter):
-    ext = ".fastq.gz"
+    ext = ".fastq"
     _get_output_fp = _get_sample_fp
 
     def _open_filepath(self, fp):
-        return gzip.open(fp, "w")
+        return open(fp, "w")
 
     def _write_to_file(self, f, read):
         f.write("@%s\n%s\n+\n%s\n" % (read.desc, read.seq, read.qual))
