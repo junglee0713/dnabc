@@ -6,26 +6,18 @@ class IndexFastqSequenceFile(object):
     This format is used by the MiSeq but not supported by newer HiSeq
     machines.
     """
-    def __init__(self, fwd_fp, rev_fp, idx_fp):
-        self.forward_filepath = fwd_fp
-        self.reverse_filepath = rev_fp
-        self.index_filepath = idx_fp
+    def __init__(self, fwd, rev, idx):
+        self.forward_file = fwd
+        self.reverse_file = rev
+        self.index_file = idx
 
     def demultiplex(self, assigner, writer):
-        idx_file = open(self.index_filepath, "rb")
-        fwd_file = open(self.forward_filepath, "rb")
-        rev_file = open(self.reverse_filepath, "rb")
-        idxs = (FastqRead(x) for x in parse_fastq(idx_file))
-        fwds = (FastqRead(x) for x in parse_fastq(fwd_file))
-        revs = (FastqRead(x) for x in parse_fastq(rev_file))
-        try:
-            for idx, fwd, rev in itertools.izip(idxs, fwds, revs):
-                sample = assigner.assign(idx.seq)
-                writer.write((fwd, rev), sample)
-        finally:
-            idx_file.close()
-            fwd_file.close()
-            rev_file.close()
+        idxs = (FastqRead(x) for x in parse_fastq(self.index_file))
+        fwds = (FastqRead(x) for x in parse_fastq(self.forward_file))
+        revs = (FastqRead(x) for x in parse_fastq(self.reverse_file))
+        for idx, fwd, rev in itertools.izip(idxs, fwds, revs):
+            sample = assigner.assign(idx.seq)
+            writer.write((fwd, rev), sample)
         return assigner.read_counts
 
 
@@ -35,23 +27,17 @@ class NoIndexFastqSequenceFile(object):
     This format is used by the newer HiSeq machines.  Barcodes are
     found in the description lines of each read.
     """
-    def __init__(self, fwd_fp, rev_fp):
-        self.forward_filepath = fwd_fp
-        self.reverse_filepath = rev_fp
+    def __init__(self, fwd, rev):
+        self.forward_file = fwd
+        self.reverse_file = rev
 
     def demultiplex(self, assigner, writer):
-        fwd_file = open(self.forward_filepath, "rb")
-        rev_file = open(self.reverse_filepath, "rb")
-        fwds = (FastqRead(x) for x in parse_fastq(fwd_file))
-        revs = (FastqRead(x) for x in parse_fastq(rev_file))
-        try:
-            for fwd, rev in itertools.izip(fwds, revs):
-                barcode_seq = self._parse_barcode(fwd.desc)
-                sample = assigner.assign(barcode_seq)
-                writer.write((fwd, rev), sample)
-        finally:
-            fwd_file.close()
-            rev_file.close()
+        fwds = (FastqRead(x) for x in parse_fastq(self.forward_file))
+        revs = (FastqRead(x) for x in parse_fastq(self.reverse_file))
+        for fwd, rev in itertools.izip(fwds, revs):
+            barcode_seq = self._parse_barcode(fwd.desc)
+            sample = assigner.assign(barcode_seq)
+            writer.write((fwd, rev), sample)
         return assigner.read_counts
 
     @staticmethod

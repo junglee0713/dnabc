@@ -62,23 +62,16 @@ def main(argv=None):
     os.mkdir(args.output_dir)
     writer = writer_cls(args.output_dir)
 
-    # Close input sequence files before processing
-    fwd_fp = args.forward_reads.name
-    rev_fp = args.reverse_reads.name
-    args.forward_reads.close()
-    args.reverse_reads.close()
-
     if args.index_reads is None:
-        seq_file = NoIndexFastqSequenceFile(fwd_fp, rev_fp)
+        seq_file = NoIndexFastqSequenceFile(
+            args.forward_reads, args.reverse_reads)
         assigner = BarcodeAssigner(samples, revcomp=False)
     else:
-        idx_fp = args.index_reads.name
-        args.index_reads.close()
-        seq_file = IndexFastqSequenceFile(fwd_fp, rev_fp, idx_fp)
+        seq_file = IndexFastqSequenceFile(
+            args.forward_reads, args.reverse_reads, args.index_reads)
         assigner = BarcodeAssigner(samples, revcomp=True)
 
     summary_data = seq_file.demultiplex(assigner, writer)
-
     save_summary(args.summary_file, config, summary_data)
 
 

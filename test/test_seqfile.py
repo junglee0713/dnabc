@@ -26,40 +26,22 @@ MockSample = collections.namedtuple("MockSample", "name barcode")
 
 
 class IndexFastqSequenceFileTests(unittest.TestCase):
-    def setUp(self):
-        self.temp_dir = tempfile.mkdtemp()
-        self.index_fp = os.path.join(
-            self.temp_dir, "Undetermined_S0_L001_I1_001.fastq")
-        self.index_contents = (
+    def test_demultiplex(self):
+        idx = StringIO(
             "@a\nACGTACGT\n+\n9812734[\n"
             "@b\nGGGGCGCT\n+\n78154987\n"
             "@c\nCCTTCCTT\n+\nkjafd;;;\n")
-        with open(self.index_fp, "w") as f:
-            f.write(self.index_contents)
-
-        self.forward_fp = os.path.join(
-            self.temp_dir, "Undetermined_S0_L001_R1_001.fastq")
-        with open(self.forward_fp, "w") as f:
-            f.write(
-                "@a\nGACTGCAGACGACTACGACGT\n+\n8A7T4C2G3CkAjThCeArG;\n"
-                "@b\nCAGTCAGACGCGCATCAGATC\n+\n78154987bjhasf78612rb\n"
-                "@c\nTCAGTACGTACGATACGTACG\n+\nkjafd;;;hjfasd82AHG99\n")
-
-        self.reverse_fp = os.path.join(
-            self.temp_dir, "Undetermined_S0_L001_R2_001.fastq")
-        with open(self.reverse_fp, "w") as f:
-            f.write(
-                "@a\nCATACGACGACTACGACTCAG\n+\nkjfhda987123GA;,.;,..\n"
-                "@b\nGTNNNNNNNNNNNNNNNNNNN\n+\n#####################\n"
-                "@c\nACTAGACTACGCATCAGCATG\n+\nkjafd;;;hjfasd82AHG99\n")
-
-    def tearDown(self):
-        shutil.rmtree(self.temp_dir)
-
-    def test_demultiplex(self):
-        x = IndexFastqSequenceFile(self.forward_fp, self.reverse_fp, self.index_fp)
+        fwd = StringIO(
+            "@a\nGACTGCAGACGACTACGACGT\n+\n8A7T4C2G3CkAjThCeArG;\n"
+            "@b\nCAGTCAGACGCGCATCAGATC\n+\n78154987bjhasf78612rb\n"
+            "@c\nTCAGTACGTACGATACGTACG\n+\nkjafd;;;hjfasd82AHG99\n")
+        rev = StringIO(
+            "@a\nCATACGACGACTACGACTCAG\n+\nkjfhda987123GA;,.;,..\n"
+            "@b\nGTNNNNNNNNNNNNNNNNNNN\n+\n#####################\n"
+            "@c\nACTAGACTACGCATCAGCATG\n+\nkjafd;;;hjfasd82AHG99\n")
+        x = IndexFastqSequenceFile(fwd, rev, idx)
         w = MockWriter()
-        # Barcode has 1 mismatch with second index read
+        # Barcode has 0 mismatches with second index read
         s1 = MockSample("SampleS1", "GGGGCGCT")
         a = BarcodeAssigner([s1], mismatches=0, revcomp=False)
         x.demultiplex(a, w)
@@ -77,24 +59,10 @@ class IndexFastqSequenceFileTests(unittest.TestCase):
 
 
 class NoIndexFastqSequenceFileTests(unittest.TestCase):
-    def setUp(self):
-        self.temp_dir = tempfile.mkdtemp()
-
-        self.forward_fp = os.path.join(
-            self.temp_dir, "Undetermined_S0_L001_R1_001.fastq")
-        with open(self.forward_fp, "w") as f:
-            f.write(fastq_with_barcode_fwd)
-
-        self.reverse_fp = os.path.join(
-            self.temp_dir, "Undetermined_S0_L001_R2_001.fastq")
-        with open(self.reverse_fp, "w") as f:
-            f.write(fastq_with_barcode_rev)
-
-    def tearDown(self):
-        shutil.rmtree(self.temp_dir)
-
     def test_demultiplex(self):
-        x = NoIndexFastqSequenceFile(self.forward_fp, self.reverse_fp)
+        fwd = StringIO(fastq_with_barcode_fwd)
+        rev = StringIO(fastq_with_barcode_rev)
+        x = NoIndexFastqSequenceFile(fwd, rev)
         w = MockWriter()
         # Barcode matches the 4th read
         s1 = MockSample("SampleS1", "GTTTCGCCCTAGTACA")
