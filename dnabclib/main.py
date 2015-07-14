@@ -26,9 +26,11 @@ def main(argv=None):
     p.add_argument("--reverse-reads", required=True,
         type=argparse.FileType("r"),
         help="Reverse reads file (FASTQ format)")
-    p.add_argument("--index-reads", required=True,
-        type=argparse.FileType("r"),
-        help="Index reads file (FASTQ format)")
+    p.add_argument("--index-reads", required=False,
+        type=argparse.FileType("r"), help=(
+            "Index reads file (FASTQ format). If this file is not provided, "
+            "the index reads will be taken from the description lines in the "
+            "forward reads file."))
     p.add_argument(
         "--barcode-file", required=True,
         help="Barcode information file",
@@ -51,25 +53,29 @@ def main(argv=None):
     if args.config_file:
         user_config = json.load(args.config_file)
         config.update(user_config)
-    writer_cls = writers[config["output_format"]]
-
-    # Close input sequence files before processing
-    fwd_fp = args.forward_reads.name
-    rev_fp = args.reverse_reads.name
-    idx_fp = args.index_reads.name
-    args.forward_reads.close()
-    args.reverse_reads.close()
-    args.index_reads.close()
-
-    seq_file = IndexFastqSequenceFile(fwd_fp, rev_fp, idx_fp)
 
     samples = list(Sample.load(args.barcode_file))
-    assigner = BarcodeAssigner(samples)
 
+    writer_cls = writers[config["output_format"]]
     if os.path.exists(args.output_dir):
         p.error("Output directory already exists")
     os.mkdir(args.output_dir)
     writer = writer_cls(args.output_dir)
+
+    # Close input sequence files before processing
+    fwd_fp = args.forward_reads.name
+    rev_fp = args.reverse_reads.name
+    args.forward_reads.close()
+    args.reverse_reads.close()
+
+    if args.index_reads is None:
+        seq_file = NoIndexFastqSequenceFile(fwd_fp, rev_fp)
+        assigner = BarcodeAssigner(samples, revcomp=False)
+    else:
+        idx_fp = args.index_reads.name
+        args.index_reads.close()
+        seq_file = IndexFastqSequenceFile(fwd_fp, rev_fp, idx_fp)
+        assigner = BarcodeAssigner(samples, revcomp=True)
 
     summary_data = seq_file.demultiplex(assigner, writer)
 
