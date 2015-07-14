@@ -31,15 +31,15 @@ class BarcodeAssignerTests(unittest.TestCase):
         self.assertEqual(a.read_counts, {"Abc": 0})
 
         # 0 mismatches
-        self.assertEqual(a.assign(MockRead("GTCAGGT")), s)
+        self.assertEqual(a.assign("GTCAGGT"), s)
         self.assertEqual(a.read_counts, {"Abc": 1})
 
         # 1 mismatch
-        self.assertEqual(a.assign(MockRead("GTCAAGT")), s)
+        self.assertEqual(a.assign("GTCAAGT"), s)
         self.assertEqual(a.read_counts, {"Abc": 2})
 
         # 2 mismatches
-        self.assertEqual(a.assign(MockRead("GTCAAAT")), None)
+        self.assertEqual(a.assign("GTCAAAT"), None)
         self.assertEqual(a.read_counts, {"Abc": 2})
 
 

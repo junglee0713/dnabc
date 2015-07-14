@@ -16,7 +16,7 @@ class IndexFastqSequenceFile(object):
         revs = (FastqRead(x) for x in parse_fastq(rev_file))
         try:
             for idx, fwd, rev in itertools.izip(idxs, fwds, revs):
-                sample = assigner.assign(idx)
+                sample = assigner.assign(idx.seq)
                 writer.write((fwd, rev), sample)
         finally:
             idx_file.close()
