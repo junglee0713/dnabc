@@ -58,8 +58,8 @@ class BarcodeAssigner(object):
             for error_bc in deambiguate(bc):
                 yield error_bc
         
-    def assign(self, read):
-        sample = self._barcodes.get(read.seq)
+    def assign(self, seq):
+        sample = self._barcodes.get(seq)
         if sample is not None:
             self.read_counts[sample.name] += 1
         return sample
