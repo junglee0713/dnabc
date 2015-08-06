@@ -12,22 +12,38 @@ from .version import __version__
 writers = {
     "fastq": PairedFastqWriter,
     "fasta": FastaWriter,
+}
+
+
+def get_config(user_config_file):
+    config = {
+        "output_format": "fastq"
     }
 
-default_config = {
-    "output_format": "fastq"
-    }
+    if user_config_file is None:
+        default_user_config_fp = os.path.expanduser("~/.dnabc.json")
+        if os.path.exists(default_user_config_fp):
+            user_config_file = open(default_user_config_fp)
+
+    if user_config_file is not None:
+        user_config = json.load(user_config_file)
+        config.update(user_config)
+    return config
+
 
 def main(argv=None):
     p = argparse.ArgumentParser()
     # Input
-    p.add_argument("--forward-reads", required=True,
+    p.add_argument(
+        "--forward-reads", required=True,
         type=argparse.FileType("r"),
         help="Forward reads file (FASTQ format)")
-    p.add_argument("--reverse-reads", required=True,
+    p.add_argument(
+        "--reverse-reads", required=True,
         type=argparse.FileType("r"),
         help="Reverse reads file (FASTQ format)")
-    p.add_argument("--index-reads", required=False,
+    p.add_argument(
+        "--index-reads",
         type=argparse.FileType("r"), help=(
             "Index reads file (FASTQ format). If this file is not provided, "
             "the index reads will be taken from the description lines in the "
@@ -50,10 +66,7 @@ def main(argv=None):
         help="Configuration file (JSON format)")
     args = p.parse_args(argv)
 
-    config = default_config
-    if args.config_file:
-        user_config = json.load(args.config_file)
-        config.update(user_config)
+    config = get_config(args.config_file)
 
     samples = list(Sample.load(args.barcode_file))
 

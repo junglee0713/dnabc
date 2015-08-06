@@ -4,7 +4,27 @@ import shutil
 import tempfile
 import unittest
 
-from dnabclib.main import main
+from dnabclib.main import (
+    main, get_config,
+)
+
+
+class ConfigTests(unittest.TestCase):
+    def setUp(self):
+        self.temp_home_dir = tempfile.mkdtemp()
+        self._old_home_dir = os.environ['HOME']
+        os.environ['HOME'] = self.temp_home_dir
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_home_dir)
+        os.environ['HOME'] = self._old_home_dir
+
+    def test_default_config_locataion(self):
+        """Config file in user home dir should be read and used"""
+        with open(os.path.join(self.temp_home_dir, ".dnabc.json"), "w") as f:
+            f.write('{"output_format": "SOMECRAZYVALUE"}')
+        config = get_config(None)
+        self.assertEqual(config["output_format"], u"SOMECRAZYVALUE")
 
 
 class FastqDemultiplexTests(unittest.TestCase):
