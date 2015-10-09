@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 from dnabclib.main import (
-    main, get_config,
+    main, get_config, get_sample_names_main,
 )
 
 
@@ -80,6 +80,26 @@ class FastqDemultiplexTests(unittest.TestCase):
             res = json.load(f)
             self.assertEqual(res["data"], {"SampleA": 1, "SampleB": 1})
 
+
+class SampleNameTests(unittest.TestCase):
+    def test_get_sample_names_main(self):
+        barcode_file = tempfile.NamedTemporaryFile()
+        barcode_file.write(
+            "SampleA\tAAGGAAGG\n"
+            "SampleB\tACGTACGT\n")
+        barcode_file.seek(0)
+
+        output_file = tempfile.NamedTemporaryFile()
+        
+        get_sample_names_main([
+            "--barcode-file", barcode_file.name,
+            "--output-file", output_file.name,
+        ])
+
+        output_file.seek(0)
+        observed_sample_names = output_file.read()
+
+        self.assertEqual(observed_sample_names, "SampleA\nSampleB\n")
 
 if __name__ == "__main__":
     unittest.main()
