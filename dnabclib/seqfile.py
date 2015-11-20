@@ -53,6 +53,8 @@ class NoIndexFastqSequenceFile(object):
         # We simply grab anything past the final colon.
         # Newlines were removed by the parsing function.
         _, _, barcode_seq = desc.rpartition(":")
+        barcode_seq = barcode_seq.replace("+", "")
+        barcode_seq = barcode_seq.replace("-", "")
         return barcode_seq
 
 

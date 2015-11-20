@@ -11,6 +11,7 @@ class BarcodeAssigner(object):
         self.revcomp = revcomp
         # Sample names assumed to be unique after validating input data
         self.read_counts = dict((s.name, 0) for s in self.samples)
+        self.read_counts['unassigned'] = 0
         self._init_hash()
 
     def _init_hash(self):
@@ -62,6 +63,8 @@ class BarcodeAssigner(object):
         sample = self._barcodes.get(seq)
         if sample is not None:
             self.read_counts[sample.name] += 1
+        else:
+            self.read_counts['unassigned'] += 1
         return sample
 
 

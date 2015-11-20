@@ -28,19 +28,19 @@ class BarcodeAssignerTests(unittest.TestCase):
     def test_one_mismatch(self):
         s = MockSample("Abc", "ACCTGAC")
         a = BarcodeAssigner([s], mismatches=1, revcomp=True)
-        self.assertEqual(a.read_counts, {"Abc": 0})
+        self.assertEqual(a.read_counts, {"Abc": 0, 'unassigned':0})
 
         # 0 mismatches
         self.assertEqual(a.assign("GTCAGGT"), s)
-        self.assertEqual(a.read_counts, {"Abc": 1})
+        self.assertEqual(a.read_counts, {"Abc": 1, 'unassigned':0})
 
         # 1 mismatch
         self.assertEqual(a.assign("GTCAAGT"), s)
-        self.assertEqual(a.read_counts, {"Abc": 2})
+        self.assertEqual(a.read_counts, {"Abc": 2, 'unassigned':0})
 
         # 2 mismatches
         self.assertEqual(a.assign("GTCAAAT"), None)
-        self.assertEqual(a.read_counts, {"Abc": 2})
+        self.assertEqual(a.read_counts, {"Abc": 2, 'unassigned':1})
 
 
 class FunctionTests(unittest.TestCase):

@@ -78,7 +78,7 @@ class FastqDemultiplexTests(unittest.TestCase):
             ])
         with open(self.summary_fp) as f:
             res = json.load(f)
-            self.assertEqual(res["data"], {"SampleA": 1, "SampleB": 1})
+            self.assertEqual(res["data"], {"SampleA": 1, "SampleB": 1, "unassigned":1})
 
 
 class SampleNameTests(unittest.TestCase):
