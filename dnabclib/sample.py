@@ -19,6 +19,9 @@ class Sample(object):
         if dup_bcs:
             raise ValueError("Duplicate barcodes: %s" % dup_bcs)
 
+        if "unassigned" in names:
+            raise ValueError("A sample can not be called unassigned")
+
         return [cls(name, bc) for name, bc in records]
 
 
