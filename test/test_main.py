@@ -85,8 +85,8 @@ class SampleNameTests(unittest.TestCase):
     def test_get_sample_names_main(self):
         barcode_file = tempfile.NamedTemporaryFile()
         barcode_file.write(
-            "SampleA\tAAGGAAGG\n"
-            "SampleB\tACGTACGT\n")
+            b"SampleA\tAAGGAAGG\n"
+            b"SampleB\tACGTACGT\n")
         barcode_file.seek(0)
 
         output_file = tempfile.NamedTemporaryFile()
@@ -99,7 +99,7 @@ class SampleNameTests(unittest.TestCase):
         output_file.seek(0)
         observed_sample_names = output_file.read()
 
-        self.assertEqual(observed_sample_names, "SampleA\nSampleB\n")
+        self.assertEqual(observed_sample_names, b"SampleA\nSampleB\n")
 
 if __name__ == "__main__":
     unittest.main()

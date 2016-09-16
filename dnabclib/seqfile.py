@@ -15,7 +15,7 @@ class IndexFastqSequenceFile(object):
         idxs = (FastqRead(x) for x in parse_fastq(self.index_file))
         fwds = (FastqRead(x) for x in parse_fastq(self.forward_file))
         revs = (FastqRead(x) for x in parse_fastq(self.reverse_file))
-        for idx, fwd, rev in itertools.izip(idxs, fwds, revs):
+        for idx, fwd, rev in zip(idxs, fwds, revs):
             sample = assigner.assign(idx.seq)
             writer.write((fwd, rev), sample)
         return assigner.read_counts
@@ -34,7 +34,7 @@ class NoIndexFastqSequenceFile(object):
     def demultiplex(self, assigner, writer):
         fwds = (FastqRead(x) for x in parse_fastq(self.forward_file))
         revs = (FastqRead(x) for x in parse_fastq(self.reverse_file))
-        for fwd, rev in itertools.izip(fwds, revs):
+        for fwd, rev in zip(fwds, revs):
             barcode_seq = self._parse_barcode(fwd.desc)
             sample = assigner.assign(barcode_seq)
             writer.write((fwd, rev), sample)
@@ -67,7 +67,7 @@ def _grouper(iterable, n):
     "Collect data into fixed-length chunks or blocks"
     # grouper('ABCDEFG', 3) --> ABC DEF
     args = [iter(iterable)] * n
-    return itertools.izip(*args)
+    return zip(*args)
 
 
 def parse_fastq(f):

@@ -1,5 +1,5 @@
 import collections
-from cStringIO import StringIO
+from io import StringIO
 import os.path
 import shutil
 import tempfile
@@ -20,7 +20,6 @@ class MockWriter(object):
             self.written[None].append(x)
         else:
             self.written[sample.name].append(x)
-
 
 MockSample = collections.namedtuple("MockSample", "name barcode")
 
