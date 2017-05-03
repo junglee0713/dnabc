@@ -25,7 +25,8 @@ class FastaWriterTests(unittest.TestCase):
         w.close()
 
         fp = w._get_output_fp(s1)
-        obs_output = open(fp).read()
+        with open(fp) as f:
+        	obs_output = f.read()
         self.assertEqual(obs_output, ">Read0\nACCTTGG\n")
 
         self.assertFalse(os.path.exists(w._get_output_fp(s2)))
@@ -49,7 +50,8 @@ class FastqWriterTests(unittest.TestCase):
         w.close()
 
         fp = w._get_output_fp(s1)
-        obs_output = open(fp).read()
+        with open(fp) as f:
+        	obs_output = f.read()
         
         self.assertEqual(obs_output, "@Read0\nACCTTGG\n+\n#######\n")
 
@@ -79,10 +81,12 @@ class PairedFastqWriterTests(unittest.TestCase):
 
         fp1, fp2 = w._get_output_fp(s1)
 
-        obs1 = open(fp1).read()
+        with open(fp1) as f:
+        	obs1 = f.read()
         self.assertEqual(obs1, "@Read0\nACCTTGG\n+\n#######\n")
 
-        obs2 = open(fp2).read()
+        with open(fp2) as f:
+        	obs2 = f.read()
         self.assertEqual(obs2, "@Read1\nGCTAGCT\n+\n;342dfA\n")
 
         self.assertFalse(any(
