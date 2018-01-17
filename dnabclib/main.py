@@ -89,9 +89,9 @@ def main(argv=None):
     samples = list(Sample.load(args.barcode_file))
 
     writer_cls = writers[config["output_format"]]
-    if os.path.exists(args.output_dir):
-        p.error("Output directory already exists")
-    os.mkdir(args.output_dir)
+    if not os.path.exists(args.output_dir):
+       #p.error("Output directory already exists")
+       os.mkdir(args.output_dir)
     writer = writer_cls(args.output_dir)
 
     if args.index_reads is None:
